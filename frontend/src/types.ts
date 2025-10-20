@@ -2,7 +2,7 @@
  * Type definitions for the Cheatsheet Creator application
  */
 
-export type BlockType = "text" | "code" | "table" | "calculation" | "list" | "checkbox" | "reference";
+export type BlockType = "text" | "code" | "table" | "calculation" | "list" | "checkbox" | "reference" | "image";
 
 export interface ReferenceCardRow {
   description: string;
@@ -21,6 +21,8 @@ export interface Block {
   h: number;  // Grid height
   language?: string;  // For code blocks
   referenceData?: ReferenceCardRow[];  // For reference card blocks
+  imageUrl?: string;  // For image blocks
+  imageAlt?: string;  // Alt text for image blocks
 }
 
 export interface Section {

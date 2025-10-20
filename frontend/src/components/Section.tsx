@@ -4,6 +4,7 @@ import { Section, Block, BlockType } from '../types';
 import GridLayout from 'react-grid-layout';
 import BlockComponent from './Block';
 import { Plus, ChevronUp, ChevronDown, Trash2, Edit2, Check, X } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -28,6 +29,7 @@ export default function SectionComponent({
   onMoveUp,
   onMoveDown,
 }: SectionProps) {
+  const { settings } = useSettings();
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(section.title);
   const [showBlockTypeMenu, setShowBlockTypeMenu] = useState(false);
@@ -190,6 +192,7 @@ export default function SectionComponent({
   const blockTypes: { type: BlockType; label: string }[] = [
     { type: 'text', label: 'Text' },
     { type: 'code', label: 'Code' },
+    { type: 'image', label: 'Image' },
     { type: 'table', label: 'Table' },
     { type: 'list', label: 'List' },
     { type: 'checkbox', label: 'Checklist' },
@@ -390,18 +393,20 @@ export default function SectionComponent({
               i: b.id,
               x: b.x,
               y: b.y,
-              w: b.w,
-              h: b.h,
+              w: Math.max(b.w, settings.grid.minBlockWidth),
+              h: Math.max(b.h, settings.grid.minBlockHeight),
+              minW: settings.grid.minBlockWidth,
+              minH: settings.grid.minBlockHeight,
             }))}
-            cols={12}
-            rowHeight={60}
+            cols={settings.grid.columns}
+            rowHeight={settings.grid.compactMode ? settings.grid.rowHeight * 0.8 : settings.grid.rowHeight}
             width={containerWidth}
             onLayoutChange={handleLayoutChange}
             draggableHandle=".drag-handle"
             isDraggable={isEditMode}
             isResizable={isEditMode}
-            compactType="vertical"
-            margin={[16, 16]}
+            compactType={settings.grid.compactMode ? "vertical" : null}
+            margin={[settings.grid.gap, settings.grid.gap]}
             containerPadding={[0, 0]}
             preventCollision={false}
             autoSize={true}

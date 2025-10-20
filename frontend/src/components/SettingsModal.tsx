@@ -271,14 +271,78 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </label>
                   <input
                     type="range"
-                    min="8"
+                    min="4"
                     max="32"
+                    step="2"
                     value={settings.grid.gap}
                     onChange={(e) => updateSettings({
                       grid: { ...settings.grid, gap: Number(e.target.value) }
                     })}
                     className="w-full"
                   />
+                </div>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">Advanced Grid Controls</h4>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Compact Mode
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Reduce spacing for tighter layouts</p>
+                      </div>
+                      <button
+                        onClick={() => updateSettings({
+                          grid: { ...settings.grid, compactMode: !settings.grid.compactMode }
+                        })}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          settings.grid.compactMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            settings.grid.compactMode ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Min Block Width: {settings.grid.minBlockWidth} columns
+                      </label>
+                      <input
+                        type="range"
+                        min="1"
+                        max="6"
+                        value={settings.grid.minBlockWidth}
+                        onChange={(e) => updateSettings({
+                          grid: { ...settings.grid, minBlockWidth: Number(e.target.value) }
+                        })}
+                        className="w-full"
+                      />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum width blocks can be resized to</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Min Block Height: {settings.grid.minBlockHeight} rows
+                      </label>
+                      <input
+                        type="range"
+                        min="1"
+                        max="6"
+                        value={settings.grid.minBlockHeight}
+                        onChange={(e) => updateSettings({
+                          grid: { ...settings.grid, minBlockHeight: Number(e.target.value) }
+                        })}
+                        className="w-full"
+                      />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum height blocks can be resized to</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

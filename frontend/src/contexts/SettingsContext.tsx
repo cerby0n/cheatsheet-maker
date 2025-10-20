@@ -36,6 +36,9 @@ export interface GridSettings {
   columns: number;
   rowHeight: number;
   gap: number;
+  compactMode: boolean;  // Tighter spacing
+  minBlockWidth: number;  // Minimum width in columns
+  minBlockHeight: number;  // Minimum height in rows
 }
 
 export interface Settings {
@@ -64,6 +67,9 @@ const defaultSettings: Settings = {
     columns: 12,
     rowHeight: 100,
     gap: 16,
+    compactMode: false,
+    minBlockWidth: 2,
+    minBlockHeight: 2,
   },
   shortcuts: {
     newCheatsheet: { key: 'n', alt: true, description: 'Create new cheatsheet' },
