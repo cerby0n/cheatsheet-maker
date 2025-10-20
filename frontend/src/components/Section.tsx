@@ -83,8 +83,15 @@ export default function SectionComponent({
   const toggleBlockTypeMenu = () => {
     if (!showBlockTypeMenu && addButtonRef.current) {
       const rect = addButtonRef.current.getBoundingClientRect();
+      const menuHeight = 180; // Approximate dropdown height (7 items × ~26px each)
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      // Position above if not enough space below
+      const shouldPositionAbove = spaceBelow < menuHeight && spaceAbove > spaceBelow;
+
       setMenuPosition({
-        top: rect.bottom + 4,
+        top: shouldPositionAbove ? rect.top - menuHeight - 4 : rect.bottom + 4,
         right: window.innerWidth - rect.right,
       });
     }
@@ -180,14 +187,14 @@ export default function SectionComponent({
     });
   };
 
-  const blockTypes: { type: BlockType; label: string; icon: string }[] = [
-    { type: 'text', label: 'Text', icon: '📝' },
-    { type: 'code', label: 'Code', icon: '💻' },
-    { type: 'table', label: 'Table', icon: '📊' },
-    { type: 'list', label: 'List', icon: '📋' },
-    { type: 'checkbox', label: 'Checklist', icon: '✅' },
-    { type: 'reference', label: 'Reference Card', icon: '📚' },
-    { type: 'calculation', label: 'Calculation', icon: '🧮' },
+  const blockTypes: { type: BlockType; label: string }[] = [
+    { type: 'text', label: 'Text' },
+    { type: 'code', label: 'Code' },
+    { type: 'table', label: 'Table' },
+    { type: 'list', label: 'List' },
+    { type: 'checkbox', label: 'Checklist' },
+    { type: 'reference', label: 'Reference Card' },
+    { type: 'calculation', label: 'Calculation' },
   ];
 
   return (
@@ -287,20 +294,19 @@ export default function SectionComponent({
 
                 {showBlockTypeMenu && menuPosition && createPortal(
                   <div
-                    className="block-type-dropdown fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] min-w-[160px] overflow-hidden"
+                    className="block-type-dropdown fixed bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-[9999] w-32 overflow-hidden py-0.5"
                     style={{
                       top: `${menuPosition.top}px`,
                       right: `${menuPosition.right}px`
                     }}
                   >
-                    {blockTypes.map(({ type, label, icon }) => (
+                    {blockTypes.map(({ type, label }) => (
                       <button
                         key={type}
                         onClick={() => handleAddBlock(type)}
-                        className="w-full text-left px-4 py-2.5 hover:bg-blue-50 transition-colors flex items-center gap-3 text-sm"
+                        className="w-full text-left px-2.5 py-1.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xs text-gray-700 dark:text-gray-200 whitespace-nowrap"
                       >
-                        <span className="text-lg">{icon}</span>
-                        <span className="font-medium">{label}</span>
+                        {label}
                       </button>
                     ))}
                   </div>,

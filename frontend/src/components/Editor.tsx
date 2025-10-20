@@ -55,7 +55,7 @@ export default function Editor({ cheatsheet, onUpdate, isEditMode }: EditorProps
 
   return (
     <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900 w-full">
-      <div className="h-full w-full px-3 py-3">
+      <div className="h-full w-full px-3 py-3 pb-96">
         {/* Sections */}
         {cheatsheet.sections.length === 0 ? (
           <div className="text-center py-20">
