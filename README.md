@@ -12,13 +12,6 @@ A modern, full-stack web application for creating, managing, and organizing chea
 - 💾 **Auto-save** - Changes are automatically persisted
 - 🎯 **Drag & Drop** - Rearrange sections and blocks with ease
 
-### Customization
-- 🌓 **Dark Mode** - Eye-friendly dark theme with full UI support
-- 🎨 **Theme Customization** - Customize primary/secondary colors
-- ✏️ **Font Settings** - Adjust base, heading, and code font sizes
-- 📐 **Grid Layout** - Customize columns, row height, and spacing
-- 🎯 **Custom CSS** - Advanced styling with custom CSS editor (includes Nord theme template)
-
 ### Productivity
 - ⌨️ **Keyboard Shortcuts** - Fully customizable shortcuts
   - `Alt + N` - Create new cheatsheet
@@ -124,7 +117,7 @@ cheatsheet/
 ## Tech Stack
 
 ### Frontend
-- **React 18** - Modern UI framework
+- **React 18** - UI framework
 - **TypeScript** - Type-safe JavaScript
 - **Vite** - Lightning-fast build tool
 - **Tailwind CSS** - Utility-first CSS framework
@@ -137,7 +130,7 @@ cheatsheet/
 - **FastAPI** - Modern, high-performance Python web framework
 - **Uvicorn** - Lightning-fast ASGI server
 - **Pydantic** - Data validation using Python type hints
-- **Python 3.11** - Latest stable Python runtime
+- **Python 3.11** - Python runtime
 
 ### Infrastructure
 - **Docker** - Containerization platform
