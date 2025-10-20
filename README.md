@@ -182,28 +182,6 @@ cp -r data/ backup-$(date +%Y%m%d)/
 cp data/cheatsheets.json backup-cheatsheets-$(date +%Y%m%d).json
 ```
 
-## Development
-
-### Local Development (Optional)
-
-While this project is designed for Docker, you can run it locally:
-
-**Backend:**
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Access at http://localhost:5173
-
 ## Keyboard Shortcuts
 
 All shortcuts are customizable in Settings → Shortcuts:
