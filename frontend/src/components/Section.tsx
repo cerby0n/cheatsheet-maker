@@ -405,10 +405,11 @@ export default function SectionComponent({
             draggableHandle=".drag-handle"
             isDraggable={isEditMode}
             isResizable={isEditMode}
-            compactType={settings.grid.compactMode ? "vertical" : null}
+            compactType={null}
             margin={[settings.grid.gap, settings.grid.gap]}
             containerPadding={[0, 0]}
-            preventCollision={false}
+            preventCollision={true}
+            allowOverlap={false}
             autoSize={true}
           >
             {section.blocks.map((block) => (
