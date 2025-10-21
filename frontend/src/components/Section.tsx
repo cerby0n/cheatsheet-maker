@@ -397,6 +397,7 @@ export default function SectionComponent({
               h: Math.max(b.h, settings.grid.minBlockHeight),
               minW: settings.grid.minBlockWidth,
               minH: settings.grid.minBlockHeight,
+              static: !isEditMode,
             }))}
             cols={settings.grid.columns}
             rowHeight={settings.grid.compactMode ? settings.grid.rowHeight * 0.8 : settings.grid.rowHeight}
@@ -405,11 +406,10 @@ export default function SectionComponent({
             draggableHandle=".drag-handle"
             isDraggable={isEditMode}
             isResizable={isEditMode}
-            compactType={null}
+            compactType="vertical"
             margin={[settings.grid.gap, settings.grid.gap]}
             containerPadding={[0, 0]}
-            preventCollision={true}
-            allowOverlap={false}
+            preventCollision={false}
             autoSize={true}
           >
             {section.blocks.map((block) => (
