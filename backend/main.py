@@ -2,13 +2,15 @@
 Cheatsheet Creator - FastAPI Backend
 This is the main entry point for the backend API
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional, Literal
 from datetime import datetime
 import json
 import os
+import shutil
 from pathlib import Path
 
 app = FastAPI(title="Cheatsheet Creator API")
@@ -35,6 +37,13 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 INDEX_FILE = Path("data/index.json")
 INDEX_FILE.parent.mkdir(exist_ok=True)
 
+# Upload directory for images
+UPLOAD_DIR = Path("data/uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# Mount static files for uploaded images
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+
 # ============== Data Models ==============
 
 class ReferenceCardRow(BaseModel):
@@ -45,7 +54,7 @@ class ReferenceCardRow(BaseModel):
 class Block(BaseModel):
     """Represents a content block within a section"""
     id: str
-    type: Literal["text", "code", "table", "calculation", "list", "checkbox", "reference"]
+    type: Literal["text", "code", "table", "calculation", "list", "checkbox", "reference", "image"]
     title: Optional[str] = None
     content: str
     # Layout properties for grid system
@@ -55,6 +64,8 @@ class Block(BaseModel):
     h: int  # Height in grid units
     language: Optional[str] = None  # For code blocks
     referenceData: Optional[List[ReferenceCardRow]] = None  # For reference card blocks
+    imageUrl: Optional[str] = None  # For image blocks
+    imageAlt: Optional[str] = None  # Alt text for image blocks
 
 class Section(BaseModel):
     """Represents a section containing multiple blocks"""
@@ -450,6 +461,10 @@ def export_cheatsheet_markdown(cheatsheet_id: str):
                     md_lines.append("|-------------|------|\n")
                     for row in block.referenceData:
                         md_lines.append(f"| {row.description} | `{row.code}` |\n")
+            elif block.type == "image":
+                if block.imageUrl:
+                    alt_text = block.imageAlt or block.title or "Image"
+                    md_lines.append(f"\n![{alt_text}]({block.imageUrl})\n")
 
     markdown_content = "\n".join(md_lines)
 
@@ -557,6 +572,39 @@ def search_cheatsheets(q: str):
                     })
 
     return results
+
+@app.post("/api/upload/image")
+async def upload_image(file: UploadFile = File(...)):
+    """Upload an image file and return the URL"""
+    # Validate file type
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp"}
+    file_ext = Path(file.filename).suffix.lower() if file.filename else ""
+
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Allowed: {', '.join(allowed_extensions)}"
+        )
+
+    # Generate unique filename
+    timestamp = int(datetime.now().timestamp() * 1000)
+    safe_filename = f"{timestamp}{file_ext}"
+    file_path = UPLOAD_DIR / safe_filename
+
+    # Save file
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save file: {str(e)}")
+    finally:
+        file.file.close()
+
+    # Return the URL path
+    return {
+        "url": f"/uploads/{safe_filename}",
+        "filename": safe_filename
+    }
 
 if __name__ == "__main__":
     import uvicorn

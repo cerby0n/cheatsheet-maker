@@ -926,6 +926,32 @@ export default function BlockComponent({ block, isEditMode, onUpdate, onDelete }
     }
 
     if (block.type === 'image') {
+      const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const response = await fetch('http://localhost:8000/api/upload/image', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error('Upload failed');
+          }
+
+          const data = await response.json();
+          const imageUrl = `http://localhost:8000${data.url}`;
+          onUpdate({ ...block, imageUrl });
+        } catch (error) {
+          console.error('Failed to upload image:', error);
+          alert('Failed to upload image. Please try again.');
+        }
+      };
+
       return (
         <div className="space-y-4">
           {/* Title Input */}
@@ -937,6 +963,36 @@ export default function BlockComponent({ block, isEditMode, onUpdate, onDelete }
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           />
 
+          {/* File Upload Section */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Image</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+                id={`file-upload-${block.id}`}
+              />
+              <label
+                htmlFor={`file-upload-${block.id}`}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
+              >
+                Choose File
+              </label>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Upload from your computer (jpg, png, gif, svg, etc.)
+              </span>
+            </div>
+          </div>
+
+          {/* OR Separator */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+            <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+          </div>
+
           {/* Image URL Input */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</label>
@@ -947,7 +1003,7 @@ export default function BlockComponent({ block, isEditMode, onUpdate, onDelete }
               placeholder="https://example.com/image.jpg"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400">Enter a URL to an image (jpg, png, gif, svg, etc.)</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Or paste a URL to an image</p>
           </div>
 
           {/* Alt Text Input */}
