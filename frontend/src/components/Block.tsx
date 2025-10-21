@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
-import { GripVertical, Trash2, Edit2, Eye, Code, Copy, Check, Plus } from 'lucide-react';
+import { GripVertical, Trash2, Edit2, Eye, Code, Copy, Check, Plus, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import EditModal from './EditModal';
 
 interface BlockProps {
@@ -124,6 +124,7 @@ export default function BlockComponent({ block, isEditMode, onUpdate, onDelete }
   const [showPreview, setShowPreview] = useState(true);
   const [copied, setCopied] = useState(false);
   const [calcVariables, setCalcVariables] = useState<Record<string, number>>({});
+  const [showCalcHelp, setShowCalcHelp] = useState(false);
   const [editReferenceRows, setEditReferenceRows] = useState(block.referenceData || []);
 
   // Sync editReferenceRows when block changes
@@ -1082,6 +1083,145 @@ export default function BlockComponent({ block, isEditMode, onUpdate, onDelete }
             placeholder={`Enter ${block.type} content...`}
           />
         </div>
+
+        {/* Help Section for Calculation Blocks */}
+        {block.type === 'calculation' && (
+          <div className="border border-blue-200 dark:border-blue-700 rounded-lg overflow-hidden">
+            {/* Help Header - Always Visible */}
+            <button
+              onClick={() => setShowCalcHelp(!showCalcHelp)}
+              className="w-full bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 px-4 py-3 flex items-center justify-between transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <HelpCircle size={18} className="text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                  Calculation Block Guide
+                </span>
+              </div>
+              {showCalcHelp ? (
+                <ChevronUp size={18} className="text-blue-600 dark:text-blue-400" />
+              ) : (
+                <ChevronDown size={18} className="text-blue-600 dark:text-blue-400" />
+              )}
+            </button>
+
+            {/* Expandable Help Content */}
+            {showCalcHelp && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 space-y-4 text-xs border-t border-blue-200 dark:border-blue-700 max-h-96 overflow-y-auto">
+
+                {/* Quick Start */}
+                <div>
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Quick Start</h5>
+                  <div className="space-y-1 text-blue-800 dark:text-blue-200">
+                    <p><strong>1. Define variables:</strong> <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">$name = value</code></p>
+                    <p><strong>2. Create formulas:</strong> <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">Label: = $var1 + $var2</code></p>
+                    <p><strong>3. Use inline inputs:</strong> <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">[varname]</code> for editable values</p>
+                  </div>
+                </div>
+
+                {/* Variable Definitions */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">1. Variable Definitions</h5>
+                  <p className="text-blue-800 dark:text-blue-200 mb-2">Create editable variables (blue inputs in reader mode):</p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`$price = 100
+$quantity = 5
+$taxRate = 0.20`}
+                  </pre>
+                </div>
+
+                {/* Formulas with Labels */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">2. Labeled Calculations</h5>
+                  <p className="text-blue-800 dark:text-blue-200 mb-2">Add labels with <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">:</code></p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`Subtotal: = $price * $quantity
+Tax: = Subtotal * $taxRate
+Total: = Subtotal + Tax`}
+                  </pre>
+                </div>
+
+                {/* Inline Inputs */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">3. Inline Editable Inputs ✨</h5>
+                  <p className="text-blue-800 dark:text-blue-200 mb-2">Create inputs directly in formulas:</p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`Price Calc: [price] × [qty] = [price] * [qty]
+Discount: [amount] - [percent]% = [amount] * (1 - [percent]/100)`}
+                  </pre>
+                </div>
+
+                {/* Math Operations */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">4. Math Operations</h5>
+                  <div className="text-blue-800 dark:text-blue-200 space-y-1">
+                    <p><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">+</code> Addition</p>
+                    <p><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">-</code> Subtraction</p>
+                    <p><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">*</code> Multiplication</p>
+                    <p><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">/</code> Division</p>
+                    <p><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">()</code> Parentheses for order</p>
+                  </div>
+                </div>
+
+                {/* Complete Example */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Complete Example</h5>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`=== Price Calculator ===
+$basePrice = 100
+$discount = 10
+$taxRate = 0.15
+
+After Discount: = $basePrice - $discount
+Tax Amount: = ($basePrice - $discount) * $taxRate
+Final Total: = ($basePrice - $discount) * (1 + $taxRate)
+
+=== Quick Calculator ===
+Add: [a] + [b] = [a] + [b]
+Multiply: [x] × [y] = [x] * [y]`}
+                  </pre>
+                </div>
+
+                {/* More Examples */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">More Examples</h5>
+
+                  <p className="font-semibold text-blue-900 dark:text-blue-100 mt-2 mb-1">Unit Converter:</p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`$meters = 100
+Feet: = $meters * 3.28084
+Miles: = $meters * 0.000621371`}
+                  </pre>
+
+                  <p className="font-semibold text-blue-900 dark:text-blue-100 mt-2 mb-1">Temperature:</p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`C to F: [celsius]°C = ([celsius] * 9/5) + 32
+F to C: [fahrenheit]°F = ([fahrenheit] - 32) * 5/9`}
+                  </pre>
+
+                  <p className="font-semibold text-blue-900 dark:text-blue-100 mt-2 mb-1">Circle Calculator:</p>
+                  <pre className="bg-blue-100 dark:bg-blue-800 p-2 rounded overflow-x-auto">
+{`$radius = 5
+Area: = 3.14159 * $radius * $radius
+Circumference: = 2 * 3.14159 * $radius`}
+                  </pre>
+                </div>
+
+                {/* Tips */}
+                <div className="border-t border-blue-200 dark:border-blue-700 pt-3">
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">💡 Tips</h5>
+                  <ul className="text-blue-800 dark:text-blue-200 space-y-1 list-disc list-inside">
+                    <li>Variables update in <strong>real-time</strong> as you edit them</li>
+                    <li>Use <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">$var</code> to reuse the same value</li>
+                    <li>Use <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">[var]</code> for quick one-off inputs</li>
+                    <li>Add text without <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">=</code> for comments/headers</li>
+                    <li>Results show up to 6 decimal places with thousand separators</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Controls Row */}
         <div className="flex items-center justify-between gap-2 pt-4 border-t border-gray-200">
