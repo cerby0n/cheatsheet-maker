@@ -65,11 +65,11 @@ const defaultSettings: Settings = {
   },
   grid: {
     columns: 12,
-    rowHeight: 100,
+    rowHeight: 20,
     gap: 16,
     compactMode: false,
     minBlockWidth: 2,
-    minBlockHeight: 2,
+    minBlockHeight: 5,
   },
   shortcuts: {
     newCheatsheet: { key: 'n', alt: true, description: 'Create new cheatsheet' },

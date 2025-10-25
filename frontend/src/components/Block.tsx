@@ -1273,7 +1273,7 @@ Circumference: = 2 * 3.14159 * $radius`}
 
   return (
     <>
-      <div className="h-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col group relative">
+      <div className="h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-auto flex flex-col group relative">
         {/* Block Header */}
         {showHeader && (
           <div className="bg-gray-50 px-3 py-2 flex items-center justify-between">

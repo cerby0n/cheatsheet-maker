@@ -255,14 +255,18 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </label>
                   <input
                     type="range"
-                    min="50"
-                    max="200"
+                    min="10"
+                    max="50"
+                    step="5"
                     value={settings.grid.rowHeight}
                     onChange={(e) => updateSettings({
                       grid: { ...settings.grid, rowHeight: Number(e.target.value) }
                     })}
                     className="w-full"
                   />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Smaller values give finer height control per block
+                  </p>
                 </div>
 
                 <div>
@@ -328,12 +332,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Min Block Height: {settings.grid.minBlockHeight} rows
+                        Min Block Height: {settings.grid.minBlockHeight} rows (~{settings.grid.minBlockHeight * settings.grid.rowHeight}px)
                       </label>
                       <input
                         type="range"
-                        min="1"
-                        max="6"
+                        min="3"
+                        max="20"
                         value={settings.grid.minBlockHeight}
                         onChange={(e) => updateSettings({
                           grid: { ...settings.grid, minBlockHeight: Number(e.target.value) }
